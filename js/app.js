@@ -11,6 +11,7 @@ const firebaseConfig = {
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 //Elementos del DOM para las tareas
 const taskInput = document.getElementById("taskInput");
@@ -25,8 +26,54 @@ const boardList = document.getElementById("boardList");
 const boardInput = document.getElementById("boardInput");
 const addBoardBtn = document.getElementById("addBoardBtn");
 
+//Botones para Google
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userInfo = document.getElementById("userInfo");
+
 //Variable global para el id del tablero actual
 let currentBoardId = null;
+let currentUser = null;
+
+//Funciones para login y logout con Google
+loginBtn.addEventListener("click", async() => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await auth.signInWithPopup(provider);
+});
+
+logoutBtn.addEventListener("click", async() => {
+    await auth.signOut();
+});
+
+//Evento que escucha cuando cambia de estado la autenticación
+auth.onAuthStateChanged((user) => {
+    console.log('ruvik user ==>', user);
+    if (user) {
+        currentUser = user;
+        userInfo.textContent = user.email;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+        boardInput.disabled = false;
+        addBoardBtn.disabled = false;
+        boardList.disabled = false;
+        loadBoards();
+        loadTasks();
+    } else {
+        currentUser = null;
+        userInfo.textContent = "No Autenticado";
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+        boardInput.disabled = true;
+        addBoardBtn.disabled = true;
+        boardList.disabled = true;
+        boardList.innerHTML = "";
+        boardTitle.textContent = "Inicia sesion para ver tus tableros";
+        taskInput.disabled = true;
+        addTaskBtn.disabled = true;
+        pendingTask.innerHTML = "";
+        doneTask.innerHTML = "";
+    }
+});
 
 addBoardBtn.addEventListener("click", async() => {
     const name = boardInput.value.trim();
@@ -35,6 +82,20 @@ addBoardBtn.addEventListener("click", async() => {
         boardInput.value = "";
     }
 });
+
+const loadBoards = () => {
+    db.collection("boards").onSnapshot((tableros) => {
+    boardList.innerHTML = "";
+    tableros.forEach((doc) => {
+        const board = doc.data();
+        const li = document.createElement("li");
+        li.classList = "list-group-item list-group-item-action";
+        li.textContent = board.name;
+        li.onclick = () => selectBoard(doc.id, board.name);
+        boardList.appendChild(li);
+    });
+});
+}
 
 db.collection("boards").onSnapshot((tableros) => {
     boardList.innerHTML = "";
