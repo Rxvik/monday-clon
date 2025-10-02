@@ -45,11 +45,37 @@
             </div>
             <div class="col-md-9">
                 <h2 id="boardTitle" class="text-center mb-4">Inicia sesion para ver tus tableros</h2>
-                  <!--Input para las tareas-->
-            <div class="input-group mb-3">
-                <input type="text" id="taskInput" class="form-control" placeholder="Escribe una tarea..." disabled>
-                <button class="btn btn-primary" id="addTaskBtn" disabled>Agregar</button>
-            </div>
+                <!--Formulario para crear Tareas-->
+                <div class="card p-3 mb-4">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <input id="taskInput" type="text" class="form-control" placeholder="Tarea..." disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <input id="assignedInput" type="text" class="form-control" placeholder="Asignar a..." disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="statusInput" class="form-select" disabled>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En Progreso">En Progreso</option>
+                                <option value="Bloqueado">Bloqueado</option>
+                                <option value="Hecho">Hecho</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="priorityInput" class="form-select" disabled>
+                                <option value="Alta">Alta</option>
+                                <option value="Media"selected>Media</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-primary w-100" id="addTaskBtn" disabled>
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <!--Kanban de Tareas-->
              <div class="row">
                 <!--Pendientes-->
